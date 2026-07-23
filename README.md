@@ -11,8 +11,8 @@ Los formularios no procesan datos.
 
 ## Enlaces
 
-- Sitio publicado: https://PENDIENTE.netlify.app
-- Repositorio: https://github.com/USUARIO/REPOSITORIO
+- Sitio publicado: https://9490-20-2571-tarea1.netlify.app/
+- Repositorio:https://github.com/ErickGonzalezUMG/Tarea_1
 - Rama: Tarea_1
 
 ## Paginas
