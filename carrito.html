@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Carrito - TecnoStore</title>
+</head>
+<body>
+
+    <h1>TecnoStore</h1>
+
+    <div>
+        <a href="index.html">Inicio</a> |
+        <a href="productos.html">Productos</a> |
+        <a href="detalle-producto.html">Detalle</a> |
+        <a href="carrito.html">Carrito</a> |
+        <a href="registro.html">Registro</a> |
+        <a href="login.html">Iniciar sesion</a> |
+        <a href="contacto.html">Contacto</a>
+    </div>
+
+    <hr>
+
+    <h2>Carrito</h2>
+
+    <form action="#" method="post">
+        <table border="1" cellpadding="5">
+            <thead>
+                <tr>
+                    <td>Producto</td>
+                    <td>Precio Q</td>
+                    <td>Cantidad</td>
+                    <td>Subtotal Q</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Laptop UltraBook 14</td>
+                    <td>7,499.00</td>
+                    <td><input type="text" name="cant1" value="1" size="3"></td>
+                    <td>7,499.00</td>
+                </tr>
+                <tr>
+                    <td>Audifonos Inalambricos Pro</td>
+                    <td>899.00</td>
+                    <td><input type="text" name="cant2" value="2" size="3"></td>
+                    <td>1,798.00</td>
+                </tr>
+                <tr>
+                    <td>Teclado Mecanico RGB</td>
+                    <td>549.00</td>
+                    <td><input type="text" name="cant3" value="1" size="3"></td>
+                    <td>549.00</td>
+                </tr>
+                <tr>
+                    <td colspan="3">Subtotal</td>
+                    <td>9,846.00</td>
+                </tr>
+                <tr>
+                    <td colspan="3">Envio</td>
+                    <td>50.00</td>
+                </tr>
+                <tr>
+                    <td colspan="3">Total</td>
+                    <td>9,896.00</td>
+                </tr>
+            </tbody>
+        </table>
+        <br>
+        <input type="submit" value="Actualizar">
+    </form>
+
+    <hr>
+
+    <h2>Datos de envio</h2>
+
+    <form action="#" method="post">
+        <label for="nombre">Nombre:</label> <br>
+        <input type="text" id="nombre" name="nombre" size="35"> <br><br>
+
+        <label for="telefono">Telefono:</label> <br>
+        <input type="text" id="telefono" name="telefono" size="20"> <br><br>
+
+        <label for="direccion">Direccion:</label> <br>
+        <textarea id="direccion" name="direccion" rows="3" cols="40"></textarea> <br><br>
+
+        <label for="departamento">Departamento:</label> <br>
+        <select id="departamento" name="departamento">
+            <option value="guatemala">Guatemala</option>
+            <option value="sacatepequez">Sacatepequez</option>
+            <option value="quetzaltenango">Quetzaltenango</option>
+            <option value="escuintla">Escuintla</option>
+            <option value="peten">Peten</option>
+        </select> <br><br>
+
+        Entrega: <br>
+        <input type="radio" id="normal" name="entrega" value="normal">
+        <label for="normal">Estandar</label> <br>
+        <input type="radio" id="express" name="entrega" value="express">
+        <label for="express">Express</label> <br>
+        <input type="radio" id="tienda" name="entrega" value="tienda">
+        <label for="tienda">Recoger en tienda</label> <br><br>
+
+        <label for="pago">Forma de pago:</label> <br>
+        <select id="pago" name="pago">
+            <option value="tarjeta">Tarjeta</option>
+            <option value="transferencia">Transferencia</option>
+            <option value="contraentrega">Contra entrega</option>
+        </select> <br><br>
+
+        <input type="checkbox" id="factura" name="factura" value="si">
+        <label for="factura">Requiere factura</label> <br><br>
+
+        <label for="nit">NIT:</label> <br>
+        <input type="text" id="nit" name="nit" size="20"> <br><br>
+
+        <input type="submit" value="Confirmar pedido">
+        <input type="reset" value="Limpiar">
+    </form>
+
+    <hr>
+
+    <footer>
+        <p>Codificado por: Erick Enrique González Canel</p>
+        <p>Carne: 9490-20-2571</p>
+    </footer>
+
+</body>
+</html>

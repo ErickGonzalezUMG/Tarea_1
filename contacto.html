@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Contacto - TecnoStore</title>
+</head>
+<body>
+
+    <h1>TecnoStore</h1>
+
+    <div>
+        <a href="index.html">Inicio</a> |
+        <a href="productos.html">Productos</a> |
+        <a href="detalle-producto.html">Detalle</a> |
+        <a href="carrito.html">Carrito</a> |
+        <a href="registro.html">Registro</a> |
+        <a href="login.html">Iniciar sesion</a> |
+        <a href="contacto.html">Contacto</a>
+    </div>
+
+    <hr>
+
+    <h2>Formulario de contacto</h2>
+
+    <form action="#" method="post">
+        <label for="nombre">Nombre:</label> <br>
+        <input type="text" id="nombre" name="nombre" size="35"> <br><br>
+
+        <label for="correo">Correo:</label> <br>
+        <input type="text" id="correo" name="correo" size="35"> <br><br>
+
+        <label for="telefono">Telefono:</label> <br>
+        <input type="text" id="telefono" name="telefono" size="20"> <br><br>
+
+        <label for="asunto">Asunto:</label> <br>
+        <select id="asunto" name="asunto">
+            <option value="pedido">Pedido</option>
+            <option value="producto">Producto</option>
+            <option value="garantia">Garantia</option>
+            <option value="factura">Facturacion</option>
+            <option value="otro">Otro</option>
+        </select> <br><br>
+
+        <label for="mensaje">Mensaje:</label> <br>
+        <textarea id="mensaje" name="mensaje" rows="6" cols="45"></textarea> <br><br>
+
+        Medio de respuesta: <br>
+        <input type="radio" id="viaCorreo" name="via" value="correo">
+        <label for="viaCorreo">Correo</label> <br>
+        <input type="radio" id="viaTelefono" name="via" value="telefono">
+        <label for="viaTelefono">Telefono</label> <br><br>
+
+        <input type="submit" value="Enviar">
+        <input type="reset" value="Limpiar">
+    </form>
+
+    <hr>
+
+    <h2>Sucursales</h2>
+
+    <table border="1" cellpadding="5">
+        <thead>
+            <tr>
+                <td>Sucursal</td>
+                <td>Direccion</td>
+                <td>Telefono</td>
+                <td>Horario</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Zona 10</td>
+                <td>6a. Avenida 12-45</td>
+                <td>2200-1010</td>
+                <td>9:00 a 19:00</td>
+            </tr>
+            <tr>
+                <td>Zona 1</td>
+                <td>8a. Calle 3-20</td>
+                <td>2200-1020</td>
+                <td>8:30 a 18:00</td>
+            </tr>
+            <tr>
+                <td>Mixco</td>
+                <td>Calzada Roosevelt km 14.5</td>
+                <td>2200-1030</td>
+                <td>10:00 a 20:00</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr>
+
+    <footer>
+        <p>Codificado por: Erick Enrique González Canel</p>
+        <p>Carne: 9490-20-2571</p>
+    </footer>
+
+</body>
+</html>

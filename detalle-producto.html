@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle - TecnoStore</title>
+</head>
+<body>
+
+    <h1>TecnoStore</h1>
+
+    <div>
+        <a href="index.html">Inicio</a> |
+        <a href="productos.html">Productos</a> |
+        <a href="detalle-producto.html">Detalle</a> |
+        <a href="carrito.html">Carrito</a> |
+        <a href="registro.html">Registro</a> |
+        <a href="login.html">Iniciar sesion</a> |
+        <a href="contacto.html">Contacto</a>
+    </div>
+
+    <hr>
+
+    <h2>Laptop UltraBook 14</h2>
+
+    <img src="https://placehold.co/180x120?text=Laptop" alt="Laptop UltraBook 14" width="250">
+
+    <p>Codigo: P-001</p>
+    <p>Precio: Q 7,499.00</p>
+
+    <h3>Especificaciones</h3>
+
+    <table border="1" cellpadding="5">
+        <tbody>
+            <tr>
+                <td>Procesador</td>
+                <td>8 nucleos de 3.4 GHz</td>
+            </tr>
+            <tr>
+                <td>Memoria RAM</td>
+                <td>16 GB</td>
+            </tr>
+            <tr>
+                <td>Almacenamiento</td>
+                <td>512 GB SSD</td>
+            </tr>
+            <tr>
+                <td>Pantalla</td>
+                <td>14 pulgadas</td>
+            </tr>
+            <tr>
+                <td>Bateria</td>
+                <td>12 horas</td>
+            </tr>
+            <tr>
+                <td>Garantia</td>
+                <td>12 meses</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Contenido de la caja</h3>
+    <ol>
+        <li>Cargador de 65 W</li>
+        <li>Cable de 1.5 metros</li>
+        <li>Guia de instalacion</li>
+        <li>Certificado de garantia</li>
+    </ol>
+
+    <hr>
+
+    <h3>Agregar al carrito</h3>
+
+    <form action="#" method="post">
+        <label for="color">Color:</label> <br>
+        <select id="color" name="color">
+            <option value="gris">Gris</option>
+            <option value="plata">Plata</option>
+            <option value="negro">Negro</option>
+        </select> <br><br>
+
+        Memoria RAM: <br>
+        <input type="radio" id="ram16" name="ram" value="16">
+        <label for="ram16">16 GB</label> <br>
+        <input type="radio" id="ram32" name="ram" value="32">
+        <label for="ram32">32 GB</label> <br><br>
+
+        <input type="checkbox" id="garantia" name="garantia" value="si">
+        <label for="garantia">Garantia extendida</label> <br><br>
+
+        <label for="cantidad">Cantidad:</label> <br>
+        <input type="text" id="cantidad" name="cantidad" size="5"> <br><br>
+
+        <input type="submit" value="Agregar al carrito">
+        <input type="reset" value="Limpiar">
+    </form>
+
+    <hr>
+
+    <footer>
+        <p>Codificado por: Erick Enrique González Canel</p>
+        <p>Carne: 9490-20-2571</p>
+    </footer>
+
+</body>
+</html>
