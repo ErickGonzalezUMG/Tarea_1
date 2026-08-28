@@ -10,8 +10,8 @@ Aplicacion web de la tienda TecnoStore, desarrollada con React y Bootstrap (Reac
 
 ## Enlaces
 
-- Sitio publicado: https://PENDIENTE.netlify.app
-- Repositorio: https://github.com/USUARIO/REPOSITORIO
+- Sitio publicado: https://9490-20-2571-tarea2.netlify.app/
+- Repositorio: https://github.com/ErickGonzalezUMG/Tarea_1
 - Rama: Tarea2
 
 ## Tecnologias
