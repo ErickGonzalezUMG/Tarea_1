@@ -1,29 +1,39 @@
-# TecnoStore - Tienda en Linea (Prototipo)
+# TecnoStore - Tienda en Linea (React + Bootstrap)
 
-Prototipo desarrollado unicamente con HTML. Sin CSS, sin frameworks y sin JavaScript.
-Los formularios no procesan datos.
+Aplicacion web de la tienda TecnoStore, desarrollada con React y Bootstrap (React-Bootstrap) como evolucion de la Tarea 1 (prototipo en HTML nativo). Aplica componentizacion, modularidad de codigo y diseno responsivo, manteniendo la misma arquitectura de informacion definida en la Tarea 1.
 
 ## Estudiantes
 
-| Nombre completo | Carne |
+| Nombre completo | Carne | Modulos desarrollados |
 |---|---|---|
-| Nombre Completo del Estudiante: Erick Enrique González Canel | 9490-20-2571 |
+| Erick Enrique González Canel | 9490-20-2571 | Todos (Navbar, Footer, Inicio, Productos, Detalle de producto, Carrito, Registro, Login, Contacto) |
 
 ## Enlaces
 
-- Sitio publicado: https://9490-20-2571-tarea1.netlify.app/
-- Repositorio:https://github.com/ErickGonzalezUMG/Tarea_1
-- Rama: Tarea_1
+- Sitio publicado: https://PENDIENTE.netlify.app
+- Repositorio: https://github.com/USUARIO/REPOSITORIO
+- Rama: Tarea2
 
-## Paginas
+## Tecnologias
 
-| Archivo | Contenido |
+- React (Vite)
+- React Router DOM
+- React-Bootstrap / Bootstrap
+- Bootstrap Icons
+
+## Paginas / Rutas
+
+| Ruta | Contenido |
 |---|---|
-| index.html | Portada, productos destacados y categorias |
-| productos.html | Busqueda y tabla de productos |
-| detalle-producto.html | Especificaciones y formulario de compra |
-| carrito.html | Tabla del carrito y datos de envio |
-| registro.html | Formulario de registro |
-| login.html | Inicio de sesion y recuperacion de contrasena |
-| contacto.html | Formulario de contacto y sucursales |
+| / | Inicio: bienvenida, carousel de productos destacados, categorias |
+| /productos | Busqueda/filtro y tabla de productos |
+| /productos/:id | Especificaciones, contenido de caja, formulario de compra |
+| /carrito | Tabla del carrito y formulario de datos de envio |
+| /registro | Formulario de registro de usuario |
+| /login | Inicio de sesion y recuperar contrasena |
+| /contacto | Formulario de contacto y tabla de sucursales |
 
+## Correr el proyecto localmente
+
+npm install
+npm run dev
