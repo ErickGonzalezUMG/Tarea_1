@@ -19,7 +19,7 @@ Se eligió **Context API + useReducer** porque:
 
 ## Enlaces
 
-- Sitio publicado: URL_PENDIENTE
+- Sitio publicado: https://9490-20-2571-tarea3.netlify.app/
 - Repositorio: https://github.com/ErickGonzalezUMG/Tarea_1
 - Rama: Tarea3
 
