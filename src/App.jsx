@@ -8,6 +8,7 @@ import Carrito from './pages/Carrito.jsx';
 import Registro from './pages/Registro.jsx';
 import Login from './pages/Login.jsx';
 import Contacto from './pages/Contacto.jsx';
+import Perfil from './pages/Perfil.jsx';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path="/registro" element={<Registro />} />
             <Route path="/login" element={<Login />} />
             <Route path="/contacto" element={<Contacto />} />
+            <Route path="/perfil" element={<Perfil />} />
           </Routes>
         </main>
 

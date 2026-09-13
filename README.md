@@ -1,39 +1,79 @@
-# TecnoStore - Tienda en Linea (React + Bootstrap)
+# TecnoStore - Gestión de Estado Global (React + Context API)
 
-Aplicacion web de la tienda TecnoStore, desarrollada con React y Bootstrap (React-Bootstrap) como evolucion de la Tarea 1 (prototipo en HTML nativo). Aplica componentizacion, modularidad de codigo y diseno responsivo, manteniendo la misma arquitectura de informacion definida en la Tarea 1.
+Evolución de la Tarea 2 de TecnoStore. Se implementa manejo de estado global con Context API y useReducer para el flujo de autenticación (Login, Logout, Perfil), renderizado condicional en el Navbar y un dashboard de usuario.
 
-## Estudiantes
+## Justificación de la arquitectura
 
-| Nombre completo | Carne | Modulos desarrollados |
+Se eligió **Context API + useReducer** porque:
+
+- useReducer centraliza la lógica de estado en un solo reducer con acciones definidas (LOGIN, LOGOUT, SET_ERROR, UPDATE_PROFILE), lo que facilita el mantenimiento y la trazabilidad de cambios.
+- Context API permite compartir el estado de autenticación entre componentes (Navbar, Login, Perfil) sin necesidad de pasar props manualmente en cada nivel.
+- El custom hook `useAuth()` encapsula el acceso al contexto, simplificando su uso en cualquier componente.
+- No se requiere instalar librerías externas como Redux, ya que Context + useReducer cubre las necesidades del proyecto.
+
+## Estudiante
+
+| Nombre completo | Carné | Módulos desarrollados |
 |---|---|---|
-| Erick Enrique González Canel | 9490-20-2571 | Todos (Navbar, Footer, Inicio, Productos, Detalle de producto, Carrito, Registro, Login, Contacto) |
+| Erick Enrique González Canel | 9490-20-2571 | Todos (AuthContext, Login, Perfil, Navbar condicional) |
 
 ## Enlaces
 
-- Sitio publicado: https://9490-20-2571-tarea2.netlify.app/
+- Sitio publicado: URL_PENDIENTE
 - Repositorio: https://github.com/ErickGonzalezUMG/Tarea_1
-- Rama: Tarea2
+- Rama: Tarea3
 
-## Tecnologias
+## Tecnologías
 
 - React (Vite)
 - React Router DOM
 - React-Bootstrap / Bootstrap
 - Bootstrap Icons
+- Context API + useReducer
 
-## Paginas / Rutas
+## Estructura de estado global
+
+```text
+src/
+├── context/
+│   └── AuthContext.jsx      # Provider, reducer y hook useAuth
+├── pages/
+│   ├── Login.jsx            # Formulario con autenticación simulada
+│   └── Perfil.jsx           # Dashboard del usuario autenticado
+└── components/
+    └── NavbarPrincipal.jsx   # Renderizado condicional según sesión
+```
+
+## Acciones del reducer
+
+| Acción | Descripción |
+|---|---|
+| LOGIN | Autentica al usuario y guarda sus datos |
+| LOGOUT | Cierra sesión y limpia el estado |
+| SET_ERROR | Muestra mensajes de error en el formulario |
+| UPDATE_PROFILE | Actualiza datos del perfil del usuario |
+
+## Páginas / Rutas
 
 | Ruta | Contenido |
 |---|---|
-| / | Inicio: bienvenida, carousel de productos destacados, categorias |
-| /productos | Busqueda/filtro y tabla de productos |
+| / | Inicio: bienvenida, carousel de productos destacados, categorías |
+| /productos | Búsqueda/filtro y tabla de productos |
 | /productos/:id | Especificaciones, contenido de caja, formulario de compra |
-| /carrito | Tabla del carrito y formulario de datos de envio |
+| /carrito | Tabla del carrito y formulario de datos de envío |
 | /registro | Formulario de registro de usuario |
-| /login | Inicio de sesion y recuperar contrasena |
+| /login | Inicio de sesión con validación y autenticación simulada |
 | /contacto | Formulario de contacto y tabla de sucursales |
+| /perfil | Dashboard del usuario autenticado con opción de cerrar sesión |
+
+## Credenciales de prueba
+
+- Correo: admin@tecnostore.com
+- Contraseña: 1234
 
 ## Correr el proyecto localmente
 
+```bash
 npm install
 npm run dev
+```
