@@ -1,11 +1,36 @@
-import { useState } from 'react';
-import { Container, Form, Table, Badge, Button, Row, Col } from 'react-bootstrap';
+import { useState, useEffect } from 'react';
+import { Container, Form, Table, Badge, Button, Row, Col, Alert, Spinner } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import productos from '../data/productos.js';
+import API_URL from '../config.js';
 
 function Productos() {
+  const [productos, setProductos] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState('');
   const [busqueda, setBusqueda] = useState('');
   const [categoria, setCategoria] = useState('todas');
+
+  useEffect(() => {
+    async function cargarProductos() {
+      try {
+        const respuesta = await fetch(`${API_URL}/api/recursos`);
+        const datos = await respuesta.json();
+
+        if (!respuesta.ok) {
+          setError(datos.error);
+          return;
+        }
+
+        setProductos(datos);
+      } catch (error) {
+        setError('No se pudo conectar con el servidor.');
+      } finally {
+        setCargando(false);
+      }
+    }
+
+    cargarProductos();
+  }, []);
 
   const productosFiltrados = productos.filter((producto) => {
     const coincideNombre = producto.nombre.toLowerCase().includes(busqueda.toLowerCase());
@@ -58,40 +83,54 @@ function Productos() {
 
       <h2 className="mb-3">Lista de productos</h2>
 
-      <Table striped bordered hover responsive>
-        <thead>
-          <tr>
-            <th>Codigo</th>
-            <th>Producto</th>
-            <th>Categoria</th>
-            <th>Precio Q</th>
-            <th>Existencia</th>
-            <th>Detalle</th>
-          </tr>
-        </thead>
-        <tbody>
-          {productosFiltrados.map((producto) => (
-            <tr key={producto.codigo}>
-              <td>{producto.codigo}</td>
-              <td>{producto.nombre}</td>
-              <td>{producto.categoria}</td>
-              <td>{producto.precio.toFixed(2)}</td>
-              <td>
-                {producto.existencia === 0 ? (
-                  <Badge bg="danger">Agotado</Badge>
-                ) : (
-                  <Badge bg="success">{producto.existencia} disponibles</Badge>
-                )}
-              </td>
-              <td>
-                <Button as={Link} to={`/productos/${producto.codigo}`} size="sm" variant="outline-primary">
-                  Ver
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      {cargando && (
+        <div className="text-center my-4">
+          <Spinner animation="border" />
+          <p className="mt-2">Cargando productos...</p>
+        </div>
+      )}
+
+      {error && <Alert variant="danger">{error}</Alert>}
+
+      {!cargando && !error && (
+        <>
+          <Table striped bordered hover responsive>
+            <thead>
+              <tr>
+                <th>Codigo</th>
+                <th>Producto</th>
+                <th>Categoria</th>
+                <th>Precio Q</th>
+                <th>Existencia</th>
+                <th>Detalle</th>
+              </tr>
+            </thead>
+            <tbody>
+              {productosFiltrados.map((producto) => (
+                <tr key={producto._id}>
+                  <td>{producto.codigo}</td>
+                  <td>{producto.nombre}</td>
+                  <td>{producto.categoria}</td>
+                  <td>{producto.precio.toFixed(2)}</td>
+                  <td>
+                    {producto.existencia === 0 ? (
+                      <Badge bg="danger">Agotado</Badge>
+                    ) : (
+                      <Badge bg="success">{producto.existencia} disponibles</Badge>
+                    )}
+                  </td>
+                  <td>
+                    <Button as={Link} to={`/productos/${producto._id}`} size="sm" variant="outline-primary">
+                      Ver
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+          {productosFiltrados.length === 0 && <p>No se encontraron productos.</p>}
+        </>
+      )}
     </Container>
   );
 }

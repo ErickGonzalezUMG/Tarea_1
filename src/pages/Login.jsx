@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Container, Form, Button, Row, Col, Alert } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
+import API_URL from '../config.js';
 
 function Login() {
   const [correo, setCorreo] = useState('');
@@ -9,7 +10,7 @@ function Login() {
   const { estado, dispatch } = useAuth();
   const navigate = useNavigate();
 
-  function iniciarSesion(e) {
+  async function iniciarSesion(e) {
     e.preventDefault();
 
     if (!correo || !contrasena) {
@@ -17,19 +18,23 @@ function Login() {
       return;
     }
 
-    if (correo === 'admin@tecnostore.com' && contrasena === '1234') {
-      dispatch({
-        type: 'LOGIN',
-        datos: {
-          nombre: 'Erick González',
-          correo: 'admin@tecnostore.com',
-          rol: 'Administrador',
-          fechaAcceso: new Date().toLocaleString()
-        }
+    try {
+      const respuesta = await fetch(`${API_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ correo: correo, password: contrasena }),
       });
+      const datos = await respuesta.json();
+
+      if (!respuesta.ok) {
+        dispatch({ type: 'SET_ERROR', mensaje: datos.error });
+        return;
+      }
+
+      dispatch({ type: 'LOGIN', datos: datos });
       navigate('/perfil');
-    } else {
-      dispatch({ type: 'SET_ERROR', mensaje: 'Correo o contraseña incorrectos.' });
+    } catch (error) {
+      dispatch({ type: 'SET_ERROR', mensaje: 'No se pudo conectar con el servidor.' });
     }
   }
 
@@ -61,7 +66,6 @@ function Login() {
         <Button variant="primary" type="submit">Entrar</Button>
       </Form>
 
-      <p className="text-muted mb-2">Credenciales de prueba: admin@tecnostore.com / 1234</p>
       <p><Link to="/registro">Crear una cuenta</Link></p>
     </Container>
   );

@@ -9,6 +9,7 @@ import Registro from './pages/Registro.jsx';
 import Login from './pages/Login.jsx';
 import Contacto from './pages/Contacto.jsx';
 import Perfil from './pages/Perfil.jsx';
+import AdminProductos from './pages/AdminProductos.jsx';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/contacto" element={<Contacto />} />
             <Route path="/perfil" element={<Perfil />} />
+            <Route path="/admin" element={<AdminProductos />} />
           </Routes>
         </main>
 

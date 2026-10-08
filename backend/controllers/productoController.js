@@ -9,6 +9,10 @@ function manejarError(error, response) {
     response.status(400).json({ error: 'ID inválido' });
     return;
   }
+  if (error.code === 11000) {
+    response.status(400).json({ error: 'Ya existe un producto con ese código' });
+    return;
+  }
   response.status(500).json({ error: 'Error en el servidor' });
 }
 
@@ -23,8 +27,7 @@ async function listarProductos(request, response) {
       filtro.nombre = { $regex: request.query.buscar, $options: 'i' };
     }
 
-    const productos = await Producto.find(filtro);
-    response.json(productos);
+    const productos = await Producto.find(filtro).sort({ codigo: 1 });    response.json(productos);
   } catch (error) {
     manejarError(error, response);
   }

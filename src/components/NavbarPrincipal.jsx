@@ -25,6 +25,7 @@ function NavbarPrincipal() {
 
             {estado.isAuthenticated ? (
               <>
+                <Nav.Link as={NavLink} to="/admin">Administrar</Nav.Link>
                 <Nav.Link as={NavLink} to="/perfil">
                   <i className="bi bi-person-circle"></i> {estado.usuario.nombre}
                 </Nav.Link>

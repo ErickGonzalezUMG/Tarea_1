@@ -1,15 +1,49 @@
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Container, Row, Col, Table, ListGroup, Badge, Form, Button } from 'react-bootstrap';
-import productos from '../data/productos.js';
+import { Container, Row, Col, Table, ListGroup, Badge, Form, Button, Alert, Spinner } from 'react-bootstrap';
+import API_URL from '../config.js';
 
 function DetalleProducto() {
   const { id } = useParams();
-  const producto = productos.find((p) => p.codigo === id);
+  const [producto, setProducto] = useState(null);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState('');
 
-  if (!producto) {
+  useEffect(() => {
+    async function cargarProducto() {
+      try {
+        const respuesta = await fetch(`${API_URL}/api/recursos/${id}`);
+        const datos = await respuesta.json();
+
+        if (!respuesta.ok) {
+          setError(datos.error);
+          return;
+        }
+
+        setProducto(datos);
+      } catch (error) {
+        setError('No se pudo conectar con el servidor.');
+      } finally {
+        setCargando(false);
+      }
+    }
+
+    cargarProducto();
+  }, [id]);
+
+  if (cargando) {
+    return (
+      <Container className="py-4 text-center">
+        <Spinner animation="border" />
+        <p className="mt-2">Cargando producto...</p>
+      </Container>
+    );
+  }
+
+  if (error || !producto) {
     return (
       <Container className="py-4">
-        <h2>Producto no encontrado</h2>
+        <Alert variant="danger">{error || 'Producto no encontrado'}</Alert>
         <Link to="/productos">Volver a productos</Link>
       </Container>
     );
@@ -36,7 +70,7 @@ function DetalleProducto() {
       <h3 className="mt-4">Especificaciones</h3>
       <Table striped bordered>
         <tbody>
-          {Object.entries(producto.specs).map(([clave, valor]) => (
+          {Object.entries(producto.specs || {}).map(([clave, valor]) => (
             <tr key={clave}>
               <td>{clave}</td>
               <td>{valor}</td>
@@ -47,7 +81,7 @@ function DetalleProducto() {
 
       <h3 className="mt-4">Contenido de la caja</h3>
       <ListGroup className="mb-4">
-        {producto.caja.map((item) => (
+        {(producto.caja || []).map((item) => (
           <ListGroup.Item key={item}>{item}</ListGroup.Item>
         ))}
       </ListGroup>

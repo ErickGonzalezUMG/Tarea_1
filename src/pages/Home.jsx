@@ -1,6 +1,7 @@
-import { Container, Carousel, Row, Col, Card, Button } from 'react-bootstrap';
+import { useState, useEffect } from 'react';
+import { Container, Carousel, Row, Col, Card, Button, Alert, Spinner } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import productos from '../data/productos.js';
+import API_URL from '../config.js';
 
 const categorias = [
   { nombre: "Computadoras portatiles", icono: "bi-laptop" },
@@ -10,6 +11,32 @@ const categorias = [
 ];
 
 function Home() {
+  const [productos, setProductos] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    async function cargarProductos() {
+      try {
+        const respuesta = await fetch(`${API_URL}/api/recursos`);
+        const datos = await respuesta.json();
+
+        if (!respuesta.ok) {
+          setError(datos.error);
+          return;
+        }
+
+        setProductos(datos);
+      } catch (error) {
+        setError('No se pudo conectar con el servidor.');
+      } finally {
+        setCargando(false);
+      }
+    }
+
+    cargarProductos();
+  }, []);
+
   const destacados = productos.slice(0, 3);
 
   return (
@@ -19,40 +46,53 @@ function Home() {
         Tu tienda de tecnologia: laptops, audifonos, teclados y mas.
       </p>
 
-      <Carousel className="mb-5">
-        {destacados.map((producto) => (
-          <Carousel.Item key={producto.codigo}>
-            <div
-              className="d-flex align-items-center justify-content-center bg-dark text-white"
-              style={{ height: '350px' }}
-            >
-              <i className={`bi ${producto.icono}`} style={{ fontSize: '140px' }}></i>
-            </div>
-            <Carousel.Caption>
-              <h3>{producto.nombre}</h3>
-              <p>Q {producto.precio.toFixed(2)}</p>
-            </Carousel.Caption>
-          </Carousel.Item>
-        ))}
-      </Carousel>
+      {cargando && (
+        <div className="text-center my-5">
+          <Spinner animation="border" />
+          <p className="mt-2">Cargando productos...</p>
+        </div>
+      )}
 
-      <h2 className="mb-3">Productos destacados</h2>
-      <Row className="mb-5">
-        {destacados.map((producto) => (
-          <Col md={4} className="mb-3" key={producto.codigo}>
-            <Card className="h-100 text-center">
-              <Card.Body>
-                <i className={`bi ${producto.icono} d-block mb-3`} style={{ fontSize: '60px' }}></i>
-                <Card.Title>{producto.nombre}</Card.Title>
-                <Card.Text>Q {producto.precio.toFixed(2)}</Card.Text>
-                <Button as={Link} to={`/productos/${producto.codigo}`} variant="primary">
-                  Ver detalle
-                </Button>
-              </Card.Body>
-            </Card>
-          </Col>
-        ))}
-      </Row>
+      {error && <Alert variant="danger">{error}</Alert>}
+
+      {!cargando && !error && destacados.length > 0 && (
+        <>
+          <Carousel className="mb-5">
+            {destacados.map((producto) => (
+              <Carousel.Item key={producto._id}>
+                <div
+                  className="d-flex align-items-center justify-content-center bg-dark text-white"
+                  style={{ height: '350px' }}
+                >
+                  <i className={`bi ${producto.icono}`} style={{ fontSize: '140px' }}></i>
+                </div>
+                <Carousel.Caption>
+                  <h3>{producto.nombre}</h3>
+                  <p>Q {producto.precio.toFixed(2)}</p>
+                </Carousel.Caption>
+              </Carousel.Item>
+            ))}
+          </Carousel>
+
+          <h2 className="mb-3">Productos destacados</h2>
+          <Row className="mb-5">
+            {destacados.map((producto) => (
+              <Col md={4} className="mb-3" key={producto._id}>
+                <Card className="h-100 text-center">
+                  <Card.Body>
+                    <i className={`bi ${producto.icono} d-block mb-3`} style={{ fontSize: '60px' }}></i>
+                    <Card.Title>{producto.nombre}</Card.Title>
+                    <Card.Text>Q {producto.precio.toFixed(2)}</Card.Text>
+                    <Button as={Link} to={`/productos/${producto._id}`} variant="primary">
+                      Ver detalle
+                    </Button>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        </>
+      )}
 
       <h2 className="mb-3">Categorias</h2>
       <Row>

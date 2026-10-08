@@ -66,4 +66,17 @@ async function login(request, response) {
   }
 }
 
-module.exports = { register, login };
+async function perfil(request, response) {
+  try {
+    const usuario = await User.findById(request.params.id);
+    if (!usuario) {
+      response.status(404).json({ error: 'Usuario no encontrado' });
+      return;
+    }
+    response.json(datosPublicos(usuario));
+  } catch (error) {
+    response.status(400).json({ error: 'ID inválido' });
+  }
+}
+
+module.exports = { register, login, perfil };
