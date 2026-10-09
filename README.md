@@ -10,8 +10,8 @@ Evolución de la Tarea 3 de TecnoStore. El frontend en React ahora consume un ba
 
 ## Enlaces
 
-- Frontend publicado: (pendiente: agregar URL de Netlify/Vercel)
-- Backend publicado: (pendiente: agregar URL de Render/Railway)
+- Frontend publicado: https://9490-20-2571-tarea4.netlify.app/
+- Backend publicado: https://tecnostore-api-9mxh.onrender.com
 - Repositorio: https://github.com/ErickGonzalezUMG/Tarea_1
 - Rama: Tarea4
 
