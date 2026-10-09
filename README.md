@@ -107,7 +107,7 @@ npm run dev
 
 ## Pruebas de la API
 
-Las pruebas de los endpoints se hicieron con Postman. La colección exportada se incluye en el repositorio (pendiente: agregar el archivo `.json`).
+Las pruebas de los endpoints se hicieron con Postman. La colección exportada está en `postman/TecnoStore-API.postman_collection.json`.
 
 ## Credenciales de prueba
 
