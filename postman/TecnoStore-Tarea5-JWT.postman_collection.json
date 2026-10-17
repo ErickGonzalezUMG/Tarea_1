@@ -1,0 +1,275 @@
+{
+  "info": {
+    "_postman_id": "5b0c1f6e-3a7d-4e52-9c18-7d2a4f90e611",
+    "name": "TecnoStore API - Tarea 5 JWT",
+    "description": "Pruebas de seguridad con JWT de TecnoStore (Tarea 5). Ejecutar en orden; la peticion 5 debe correrse 5 minutos despues de la 1.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1 - Login (obtiene el token)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Login correcto (200)', function () { pm.response.to.have.status(200); });",
+              "var datos = pm.response.json();",
+              "pm.test('La respuesta trae token', function () { pm.expect(datos.token).to.be.a('string'); });",
+              "pm.collectionVariables.set('token', datos.token);",
+              "pm.collectionVariables.set('usuario_id', datos.id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/auth/login",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        },
+        "description": "Devuelve los datos del usuario y el token JWT (vence en 5 minutos). El script guarda token y usuario_id en variables de la coleccion. Cambiar el correo y la password por los de un usuario registrado.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"correo\": \"CAMBIAR@correo.com\",\n  \"password\": \"CAMBIAR\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2 - Perfil con token valido (200)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Peticion protegida exitosa (200)', function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/auth/perfil/{{usuario_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "perfil",
+            "{{usuario_id}}"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "description": "Ruta protegida. Se envia Authorization: Bearer con el token del login. Debe responder 200."
+      },
+      "response": []
+    },
+    {
+      "name": "3 - Crear producto sin token (401)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Sin token responde 401', function () { pm.response.to.have.status(401); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/recursos",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "recursos"
+          ]
+        },
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "No se envia Authorization. Debe responder 401 con No se proporcionó un token.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"codigo\": \"P-999\",\n  \"nombre\": \"Producto de prueba\",\n  \"categoria\": \"Audio\",\n  \"precio\": 100,\n  \"existencia\": 5,\n  \"icono\": \"bi-box\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "4 - Crear producto con token invalido (401)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Token invalido responde 401', function () { pm.response.to.have.status(401); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/recursos",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "recursos"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "token.alterado.invalido",
+              "type": "string"
+            }
+          ]
+        },
+        "description": "Token alterado. Debe responder 401 con Token inválido.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"codigo\": \"P-999\",\n  \"nombre\": \"Producto de prueba\",\n  \"categoria\": \"Audio\",\n  \"precio\": 100,\n  \"existencia\": 5,\n  \"icono\": \"bi-box\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "5 - Crear producto con token vencido, despues de 5 minutos (401)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Token vencido responde 401', function () { pm.response.to.have.status(401); });",
+              "pm.test('Error es token_expired', function () { pm.expect(pm.response.json().error).to.eql('token_expired'); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/recursos",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "recursos"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "description": "Ejecutar al menos 5 minutos despues del Login 1. El token ya vencio: responde 401 con error token_expired y el mensaje de sesion expirada.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"codigo\": \"P-999\",\n  \"nombre\": \"Producto de prueba\",\n  \"categoria\": \"Audio\",\n  \"precio\": 100,\n  \"existencia\": 5,\n  \"icono\": \"bi-box\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://tecnostore-api-9mxh.onrender.com"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "usuario_id",
+      "value": ""
+    }
+  ]
+}

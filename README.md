@@ -10,8 +10,8 @@ Evolución de la Tarea 4 de TecnoStore (React + Node + Express + Mongoose + Mong
 
 ## Enlaces
 
-- Frontend publicado: PENDIENTE
-- Backend publicado: PENDIENTE
+- Frontend publicado: https://9490-20-2571-tarea5.netlify.app/
+- Backend publicado: https://tecnostore-api-9mxh.onrender.com
 - Repositorio: https://github.com/ErickGonzalezUMG/Tarea_1
 - Rama: Tarea5
 
