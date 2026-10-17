@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import NavbarPrincipal from './components/NavbarPrincipal.jsx';
 import Footer from './components/Footer.jsx';
+import VigilanteSesion from './components/VigilanteSesion.jsx';
 import Home from './pages/Home.jsx';
 import Productos from './pages/Productos.jsx';
 import DetalleProducto from './pages/DetalleProducto.jsx';
@@ -14,6 +15,7 @@ import AdminProductos from './pages/AdminProductos.jsx';
 function App() {
   return (
     <BrowserRouter>
+      <VigilanteSesion />
       <div className="d-flex flex-column min-vh-100">
         <NavbarPrincipal />
 

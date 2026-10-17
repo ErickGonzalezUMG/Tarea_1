@@ -2,10 +2,9 @@ import { useState, useEffect } from 'react';
 import { Container, Card, ListGroup, Badge, Button, Alert, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
-import API_URL from '../config.js';
 
 function Perfil() {
-  const { estado, dispatch } = useAuth();
+  const { estado, dispatch, peticion } = useAuth();
   const navigate = useNavigate();
   const [perfil, setPerfil] = useState(null);
   const [error, setError] = useState('');
@@ -15,7 +14,7 @@ function Perfil() {
 
     async function cargarPerfil() {
       try {
-        const respuesta = await fetch(`${API_URL}/api/auth/perfil/${estado.usuario.id}`);
+        const respuesta = await peticion(`/api/auth/perfil/${estado.usuario.id}`);
         const datos = await respuesta.json();
 
         if (!respuesta.ok) {

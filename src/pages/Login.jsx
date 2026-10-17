@@ -31,7 +31,7 @@ function Login() {
         return;
       }
 
-      dispatch({ type: 'LOGIN', datos: datos });
+      dispatch({ type: 'LOGIN', datos: datos, token: datos.token });
       navigate('/perfil');
     } catch (error) {
       dispatch({ type: 'SET_ERROR', mensaje: 'No se pudo conectar con el servidor.' });
@@ -41,6 +41,10 @@ function Login() {
   return (
     <Container className="py-4">
       <h2 className="mb-4">Iniciar sesión</h2>
+
+      {estado.sesionExpirada && (
+        <Alert variant="warning">Su sesión ya no es válida o ha caducado. Por favor, inicie sesión nuevamente.</Alert>
+      )}
 
       {estado.error && <Alert variant="danger">{estado.error}</Alert>}
 

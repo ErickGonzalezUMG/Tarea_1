@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 function datosPublicos(user) {
@@ -60,7 +61,13 @@ async function login(request, response) {
       return;
     }
 
-    response.json(datosPublicos(usuario));
+    const token = jwt.sign(
+      { id: usuario._id, correo: usuario.correo, rol: usuario.rol },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN }
+    );
+
+    response.json({ ...datosPublicos(usuario), token });
   } catch (error) {
     response.status(500).json({ error: 'Error en el servidor' });
   }

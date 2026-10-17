@@ -39,7 +39,7 @@ const formularioVacio = {
 };
 
 function AdminProductos() {
-  const { estado } = useAuth();
+  const { estado, peticion } = useAuth();
   const [productos, setProductos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState('');
@@ -113,12 +113,11 @@ function AdminProductos() {
     };
 
     try {
-      const url = editandoId
-        ? `${API_URL}/api/recursos/${editandoId}`
-        : `${API_URL}/api/recursos`;
-      const respuesta = await fetch(url, {
+      const ruta = editandoId
+        ? `/api/recursos/${editandoId}`
+        : '/api/recursos';
+      const respuesta = await peticion(ruta, {
         method: editandoId ? 'PUT' : 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(datos),
       });
       const resultado = await respuesta.json();
@@ -144,7 +143,7 @@ function AdminProductos() {
     setError('');
     setMensaje('');
     try {
-      const respuesta = await fetch(`${API_URL}/api/recursos/${id}`, { method: 'DELETE' });
+      const respuesta = await peticion(`/api/recursos/${id}`, { method: 'DELETE' });
       const resultado = await respuesta.json();
       if (!respuesta.ok) {
         setError(resultado.error || 'Error al eliminar');
