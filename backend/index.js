@@ -13,6 +13,10 @@ app.use(express.json());
 
 conectarDB();
 
+app.get('/version', function (request, response) {
+  return response.json({ version: process.env.APP_VERSION });
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/recursos', productoRoutes);
 

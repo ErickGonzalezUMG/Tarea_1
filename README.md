@@ -1,153 +1,125 @@
-# TecnoStore - Tarea 5 (Seguridad con JWT)
+# TecnoStore - Tarea 6 (Estrategias de despliegue con Docker)
 
-Evolución de la Tarea 4 de TecnoStore (React + Node + Express + Mongoose + MongoDB Atlas). En esta tarea se agrega autenticación con JSON Web Tokens (JWT): el servidor firma un token al iniciar sesión, las rutas de administración están protegidas con un middleware y el frontend envía el token en cada petición protegida y maneja la sesión expirada.
+Manual técnico e implementación de tres estrategias de despliegue con Docker, tomando como base el backend de TecnoStore (Tareas 4 y 5): **Recreate**, **Blue-Green** y **Canary**.
 
 ## Estudiante
 
 | Nombre completo | Carné | Responsabilidades |
 |---|---|---|
-| Erick Enrique González Canel | 9490-20-2571 | Todo el proyecto: backend (login con firma de JWT, middleware de validación, protección de rutas), frontend (almacenamiento del token, función central de peticiones, manejo global de sesión expirada y redirección a /login), pruebas en Postman, despliegue y documentación |
+| Erick Enrique González Canel | 9490-20-2571 | Todo el trabajo: Dockerfile, imágenes versionadas, implementación y pruebas de las tres estrategias, y manual técnico |
 
 ## Enlaces
 
-- Frontend publicado: https://9490-20-2571-tarea5.netlify.app/
-- Backend publicado: https://tecnostore-api-9mxh.onrender.com
 - Repositorio: https://github.com/ErickGonzalezUMG/Tarea_1
-- Rama: Tarea5
+- Rama: Tarea6
+- Informe técnico: `docs/Manual_Tecnico_Tarea6_Docker.docx`
 
-## Tecnologías
-
-- Frontend: React (Vite), React Router DOM, React-Bootstrap / Bootstrap, Bootstrap Icons, Context API + useReducer
-- Backend: Node.js, Express, Mongoose, bcryptjs, jsonwebtoken, cors, dotenv
-- Base de datos: MongoDB Atlas (cluster gratuito)
-
-## Explicación técnica de la seguridad con JWT
-
-### Backend
-
-**Configuración del token.** El secreto y la expiración se leen de variables de entorno en `backend/.env`, que no se sube al repositorio:
-
-- `JWT_SECRET`: clave con la que se firma y se verifica el token.
-- `JWT_EXPIRES_IN=5m`: el token vence exactamente a los 5 minutos.
-
-**Login (`POST /api/auth/login`).** Si el correo y la contraseña son correctos, el servidor firma un token con `jwt.sign`. El payload lleva `id`, `correo` y `rol`, nunca la contraseña. El token se devuelve junto con los datos públicos del usuario.
-
-**Middleware reutilizable (`backend/middlewares/auth.js`).** Lee la cabecera `Authorization: Bearer <token>` y verifica el token con `jwt.verify` y el secreto. Respuestas:
-
-- Sin cabecera o sin token: 401 con `{ "error": "No se proporcionó un token" }`.
-- Token vencido (`TokenExpiredError`): 401 con `{ "error": "token_expired", "message": "La sesión ha expirado o ya no es válida. Por favor, inicie sesión nuevamente." }`.
-- Token alterado o inválido: 401 con `{ "error": "Token inválido" }`.
-- Token válido: guarda los datos del token en `request.usuario` y continúa con `next()`.
-
-**Rutas protegidas.** `POST`, `PUT` y `DELETE` de `/api/recursos` y `GET /api/auth/perfil/:id` usan el middleware. Las consultas públicas de productos (`GET /api/recursos` y `GET /api/recursos/:id`), `register` y `login` no lo requieren.
-
-### Frontend
-
-**Almacenamiento del token.** `AuthContext` guarda el token y el usuario en el estado (Context + useReducer) y los sincroniza con `localStorage`, para que la sesión sobreviva a recargar la página.
-
-**Cliente HTTP centralizado.** La función `peticion(ruta, opciones)` del contexto agrega la cabecera `Authorization: Bearer <token>` a todas las peticiones protegidas. `Perfil` y `AdminProductos` la usan.
-
-**Interceptación global de 401.** Cuando `peticion` recibe una respuesta 401 (token vencido o inválido):
-
-1. Elimina `token` y `usuario` de `localStorage`.
-2. Ejecuta `dispatch({ type: 'LOGOUT' })` y luego `dispatch({ type: 'SESION_EXPIRADA' })`.
-3. El componente `VigilanteSesion`, ubicado dentro del `BrowserRouter`, detecta la bandera `sesionExpirada` y redirige con `useNavigate` a `/login`.
-4. La página de login muestra un Alert: "Su sesión ya no es válida o ha caducado. Por favor, inicie sesión nuevamente."
-
-## Arquitectura del backend
+## Contenido
 
 ```text
-backend/
-├── config/
-│   └── db.js                   # Conexión a MongoDB Atlas con Mongoose
-├── models/
-│   ├── User.js                 # nombre, correo, password, rol (admin/cliente), timestamps
-│   └── Producto.js             # codigo, nombre, categoria, precio, existencia, icono, specs, caja
-├── controllers/
-│   ├── authController.js       # register, login (firma el JWT), perfil
-│   └── productoController.js   # CRUD de productos
-├── middlewares/
-│   └── auth.js                 # Valida el token Bearer (validarToken)
-├── routes/
-│   ├── authRoutes.js           # /api/auth
-│   └── productoRoutes.js       # /api/recursos
-├── index.js                    # Servidor Express: middlewares, rutas y arranque
-├── .env                        # Variables secretas (NO se sube al repositorio)
-└── .gitignore                  # Ignora .env y node_modules
+Tarea6/
+├── backend/                  # API: código, Dockerfile y .dockerignore
+├── blue-green/               # docker-compose.yml y nginx.conf (estrategia 2)
+├── canary/                   # docker-compose.yml y nginx.conf (estrategia 3)
+├── docs/                     # Manual técnico (informe)
+├── .env.docker.example       # nombres de variables, sin valores secretos
+└── README.md
 ```
 
-## Endpoints
+La estrategia Recreate se ejecuta con comandos `docker run` (ver más abajo) y no necesita archivos adicionales.
 
-### Autenticación (`/api/auth`)
+## Requisitos
 
-| Método | Ruta | Protegida | Descripción | Body (JSON) |
-|---|---|---|---|---|
-| POST | /api/auth/register | No | Registra un usuario (contraseña encriptada con bcrypt) | `{ "nombre": "...", "correo": "...", "password": "..." }` |
-| POST | /api/auth/login | No | Inicia sesión; devuelve los datos del usuario y el token JWT (vence en 5 minutos) | `{ "correo": "...", "password": "..." }` |
-| GET | /api/auth/perfil/:id | Sí | Devuelve los datos del usuario desde la base de datos | - |
+- Docker (Docker Desktop en Windows o macOS, con WSL 2 en Windows; en Linux, Docker Engine con el plugin Compose)
+- Git
 
-### Productos (`/api/recursos`)
+No hace falta instalar Node.js ni MongoDB: se ejecutan dentro de contenedores.
 
-| Método | Ruta | Protegida | Descripción |
-|---|---|---|---|
-| GET | /api/recursos | No | Lista productos. Filtros opcionales: `?categoria=...` y `?buscar=...` |
-| GET | /api/recursos/:id | No | Obtiene un producto por su id |
-| POST | /api/recursos | Sí | Crea un producto |
-| PUT | /api/recursos/:id | Sí | Actualiza un producto |
-| DELETE | /api/recursos/:id | Sí | Elimina un producto |
+## Preparación
 
-Las rutas protegidas requieren la cabecera `Authorization: Bearer <token>`.
-
-Códigos de respuesta usados: 200, 201, 400 (datos inválidos, id inválido o código duplicado), 401 (credenciales inválidas, token ausente, inválido o expirado), 404 (no encontrado) y 500 (error del servidor).
-
-## Páginas / Rutas del frontend
-
-| Ruta | Contenido |
-|---|---|
-| / | Inicio: bienvenida y productos destacados desde la API |
-| /productos | Búsqueda/filtro y tabla de productos desde la API |
-| /productos/:id | Detalle del producto desde la API |
-| /carrito | Tabla del carrito y formulario de datos de envío |
-| /registro | Registro de usuario (guarda en MongoDB) |
-| /login | Inicio de sesión contra la API; muestra errores 401 y el aviso de sesión expirada |
-| /contacto | Formulario de contacto y tabla de sucursales (público) |
-| /perfil | Perfil del usuario autenticado (petición protegida con token) |
-| /admin | Crear, editar y eliminar productos (peticiones protegidas con token) |
-
-## Variables de entorno
-
-Archivo `backend/.env` (no se sube al repositorio). Solo se indican los nombres:
-
-```text
-PORT=
-MONGO_URI=
-JWT_SECRET=
-JWT_EXPIRES_IN=
-```
-
-En el frontend, la URL del backend se configura con `VITE_API_URL` (por defecto `http://localhost:3001`).
-
-## Correr el proyecto localmente
-
-Backend (en una terminal):
+1. Clonar el repositorio y entrar a la carpeta:
 
 ```bash
-cd backend
-npm install
-node --watch index.js
+git clone -b Tarea6 https://github.com/ErickGonzalezUMG/Tarea_1.git Tarea6
+cd Tarea6
 ```
 
-Frontend (en otra terminal, en la raíz del proyecto):
+2. Crear el archivo de variables a partir del ejemplo y escribir una clave propia en `JWT_SECRET` (no se sube al repositorio):
 
 ```bash
-npm install
-npm run dev
+# Windows
+copy .env.docker.example .env.docker
+# Linux / macOS
+cp .env.docker.example .env.docker
 ```
 
-## Pruebas de la API
+3. Construir las dos versiones de la imagen:
 
-Las pruebas se hicieron con Postman. La colección exportada está en `postman/` e incluye: login (obtención del token), una petición protegida exitosa con un token válido y una petición fallida con 401 después de que pasan los 5 minutos.
+```bash
+docker build -t tecnostore-api:1.0.0 --build-arg VERSION=1.0.0 backend
+docker build -t tecnostore-api:2.0.0 --build-arg VERSION=2.0.0 backend
+```
 
-## Credenciales de prueba
+La versión se identifica con el endpoint `GET /version`.
 
-Crear un usuario desde la página `/registro` e iniciar sesión con ese correo y contraseña.
+**Ejecutar un escenario a la vez**, porque comparten puertos.
+
+## Estrategia 1: Recreate
+
+Se detiene la versión actual y se crea la nueva. Hay un corte breve (aprox. 2 s en las pruebas).
+
+```bash
+docker network create tecnostore-net
+docker run -d --name mongo --network tecnostore-net -v tecnostore-datos:/data/db mongo:7
+docker run -d --name api --network tecnostore-net --env-file .env.docker -p 3000:3001 tecnostore-api:1.0.0
+curl http://localhost:3000/version
+```
+
+Actualizar a la versión 2.0.0:
+
+```bash
+docker stop api
+docker rm api
+docker run -d --name api --network tecnostore-net --env-file .env.docker -p 3000:3001 tecnostore-api:2.0.0
+```
+
+Limpieza: `docker stop api mongo`, `docker rm api mongo`.
+
+## Estrategia 2: Blue-Green
+
+Dos entornos (Blue `1.0.0` y Green `2.0.0`) en ejecución y Nginx apuntando a uno. El cambio de versión es editar `blue-green/nginx.conf` (destino `api-blue` o `api-green` y la cabecera `X-Entorno`) y recargar Nginx.
+
+```bash
+cd blue-green
+docker compose up -d
+curl -i http://localhost:8080/version
+# editar nginx.conf y luego:
+docker compose exec nginx nginx -s reload
+curl -i http://localhost:8080/version
+docker compose down
+```
+
+## Estrategia 3: Canary
+
+Nginx reparte el tráfico por peso: 9 partes para la versión estable (`1.0.0`) y 1 para el canario (`2.0.0`). Para promover, se deja solo `api-canary` en `canary/nginx.conf` y se recarga Nginx.
+
+```bash
+cd canary
+docker compose up -d
+for i in $(seq 1 100); do curl -s http://localhost:8080/version; echo; done | sort | uniq -c
+docker compose exec nginx nginx -s reload   # después de editar nginx.conf
+docker compose down
+```
+
+En PowerShell, la distribución se cuenta con:
+
+```powershell
+$v = 1..100 | ForEach-Object { curl.exe -s http://localhost:8080/version }
+$v | Group-Object
+```
+
+## Seguridad
+
+- No hay contraseñas, tokens ni cadenas de conexión en los Dockerfile, en los archivos de Compose ni en el repositorio.
+- `.env` y `.env.docker` están excluidos con `.gitignore` y `.dockerignore`; solo se sube `.env.docker.example`, con los nombres de las variables.
+- La base de datos de las pruebas es un contenedor local de MongoDB.
